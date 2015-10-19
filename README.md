@@ -77,6 +77,9 @@ Parameter | Description
 `options.ios.badge` | `Boolean`\|`String` Optional. If `true`\|`"true"` the device sets the badge number on receipt of notification. Default is `false`\|`"false"`.
 `options.ios.sound` | `Boolean`\|`String` Optional. If `true`\|`"true"` the device plays a sound on receipt of notification. Default is `false`\|`"false"`.
 `options.windows` | `JSON Object` Windows specific initialization options.
+`options.parse` | `JSON Object` Parse.com specific initialization options.
+`options.parse.appId` | `String` Parse.com App ID.
+`options.parse.clientKey` | `String` Parse.com Client Key.
 
 #### Returns
 
