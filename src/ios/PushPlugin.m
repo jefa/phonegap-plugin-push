@@ -33,7 +33,7 @@
 @synthesize callbackId;
 @synthesize notificationCallbackId;
 @synthesize callback;
-
+@synthesize options;
 
 - (void)unregister:(CDVInvokedUrlCommand*)command;
 {
@@ -50,9 +50,10 @@
     NSLog(@"Push Plugin register called");
     self.callbackId = command.callbackId;
     
-    NSMutableDictionary* options = [command.arguments objectAtIndex:0];
-    NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
-    
+    self.options = [command.arguments objectAtIndex:0];
+        
+    NSMutableDictionary* iosOptions = [self.options objectForKey:@"ios"];
+        
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
 #endif
@@ -110,8 +111,8 @@
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
     
-    if (notificationMessage)			// if there is a pending startup notification
-        [self notificationReceived];	// go ahead and process it
+    if (notificationMessage)            // if there is a pending startup notification
+        [self notificationReceived];    // go ahead and process it
 
     }];
 }

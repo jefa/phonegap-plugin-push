@@ -47,4 +47,7 @@ public interface PushConstants {
     public static final String COLLAPSE_KEY = "collapse_key";
     public static final String FORCE_SHOW = "forceShow";
     public static final String GCM = "GCM";
+    public static final String PARSE = "parse";
+    public static final String PARSE_APP_ID = "appId";
+    public static final String PARSE_CLIENT_KEY = "clientKey";
 }

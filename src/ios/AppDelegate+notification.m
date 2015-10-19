@@ -8,6 +8,7 @@
 
 #import "AppDelegate+notification.h"
 #import "PushPlugin.h"
+#import <Parse/Parse.h>
 #import <objc/runtime.h>
 
 static char launchNotificationKey;
@@ -46,6 +47,20 @@ static char launchNotificationKey;
 {
     if (notification)
     {
+        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
+        NSMutableDictionary* parseOptions = [pushHandler.options objectForKey:@"parse"];
+
+        id appId = [parseOptions objectForKey:@"appId"];
+        id clientKey = [parseOptions objectForKey:@"clientKey"];
+
+        if (([appId isKindOfClass:[NSString class]] && [appId stringValue])
+            && ([clientKey isKindOfClass:[NSString class]] && [clientKey stringValue])) {
+            [Parse setApplicationId:appId clientKey:clientKey];
+            NSLog(@"Parse Initialized.");
+        } else {
+            NSLog(@"No Parse configuration detected.");
+        }
+
         NSDictionary *launchOptions = [notification userInfo];
         if (launchOptions)
             self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];
@@ -55,6 +70,11 @@ static char launchNotificationKey;
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
     [pushHandler didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+    
+    // Store the deviceToken in the current installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation saveInBackground];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
@@ -96,6 +116,12 @@ static char launchNotificationKey;
         self.launchNotification = nil;
         [pushHandler performSelectorOnMainThread:@selector(notificationReceived) withObject:pushHandler waitUntilDone:NO];
     }
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    //register to receive notifications
+    [application registerForRemoteNotifications];
 }
 
 //For interactive notification only

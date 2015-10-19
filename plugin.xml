@@ -20,7 +20,7 @@
 	<license>MIT</license>
 
 	<js-module src="www/push.js" name="PushNotification">
-        <clobbers target="PushNotification" />
+    <clobbers target="PushNotification" />
 	</js-module>
 
 	<engines>
@@ -29,6 +29,7 @@
 
 	<!-- android -->
 	<platform name="android">
+    <hook type="before_plugin_install" src="scripts/downloadAndroidParseSDK.js" />
 
 		<config-file target="res/xml/config.xml" parent="/*">
 			<feature name="PushNotification" >
@@ -37,7 +38,7 @@
 		</config-file>
 
 		<config-file target="AndroidManifest.xml" parent="/manifest">
-            <uses-permission android:name="android.permission.INTERNET" />
+      <uses-permission android:name="android.permission.INTERNET" />
 			<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 			<uses-permission android:name="android.permission.WAKE_LOCK" />
 			<uses-permission android:name="android.permission.VIBRATE"/>
@@ -48,45 +49,56 @@
 
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<activity android:name="com.adobe.phonegap.push.PushHandlerActivity" android:exported="true"/>
-            
-            <receiver
-                android:name="com.google.android.gms.gcm.GcmReceiver"
-                android:exported="true"
-                android:permission="com.google.android.c2dm.permission.SEND" >
-                <intent-filter>
-                    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                    <category android:name="com.example.gcm" />
-                </intent-filter>
-            </receiver>
-            <service
-                android:name="com.adobe.phonegap.push.GCMIntentService"
-                android:exported="false" >
-                <intent-filter>
-                    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                </intent-filter>
-            </service>
-            <service
-                android:name="com.adobe.phonegap.push.PushInstanceIDListenerService"
-                android:exported="false">
-                <intent-filter>
-                    <action android:name="com.google.android.gms.iid.InstanceID"/>
-                </intent-filter>
-            </service>            
+        <receiver
+          android:name="com.google.android.gms.gcm.GcmReceiver"
+          android:exported="true"
+          android:permission="com.google.android.c2dm.permission.SEND" >
+          <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            <category android:name="com.example.gcm" />
+          </intent-filter>
+        </receiver>
+        <service
+          android:name="com.adobe.phonegap.push.GCMIntentService"
+          android:exported="false" >
+          <intent-filter>
+            <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+          </intent-filter>
+        </service>
+        <service
+          android:name="com.adobe.phonegap.push.PushInstanceIDListenerService"
+          android:exported="false">
+          <intent-filter>
+            <action android:name="com.google.android.gms.iid.InstanceID"/>
+          </intent-filter>
+        </service>
+        <service android:name="com.parse.PushService" />
+        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
+            </intent-filter>
+        </receiver>
 		</config-file>
 
 		<framework src="com.android.support:support-v13:23+" />
-        <framework src="com.google.android.gms:play-services:+" />
+    <framework src="com.google.android.gms:play-services:+" />
+
+    <source-file src="src/android/Parse.jar" target-dir="libs/" />
+    <source-file src="src/android/Bolts.jar" target-dir="libs/" />
 
 		<source-file src="src/android/com/adobe/phonegap/push/GCMIntentService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushConstants.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushHandlerActivity.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushInstanceIDListenerService.java" target-dir="src/com/adobe/phonegap/push/" />
 		<source-file src="src/android/com/adobe/phonegap/push/PushPlugin.java" target-dir="src/com/adobe/phonegap/push/" />
-
 	</platform>
 
 	<!-- ios -->
 	<platform name="ios">
+    <hook type="before_plugin_install" src="scripts/downloadiOSParseSDK.js" />
 
 		<config-file target="config.xml" parent="/*">
 			<feature name="PushNotification">
@@ -100,6 +112,20 @@
 		<header-file src="src/ios/AppDelegate+notification.h" />
 		<header-file src="src/ios/PushPlugin.h" />
 
+    <framework src="src/ios/Parse.framework" custom="true" />
+    <framework src="src/ios/Bolts.framework" custom="true" />
+
+    <framework src="AudioToolbox.framework" />
+    <framework src="CFNetwork.framework" />
+    <framework src="CoreGraphics.framework" />
+    <framework src="CoreLocation.framework" />
+    <framework src="QuartzCore.framework" />
+    <framework src="Security.framework" />
+    <framework src="StoreKit.framework" />
+    <framework src="SystemConfiguration.framework" />
+
+    <framework src="libz.tbd" />
+    <framework src="libsqlite3.tbd" />
 	</platform>
 
   	<!-- windows -->

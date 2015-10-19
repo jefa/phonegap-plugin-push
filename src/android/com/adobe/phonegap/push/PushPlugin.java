@@ -3,10 +3,14 @@ package com.adobe.phonegap.push;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
+import com.iwh.rxminder.R;
 
 import com.google.android.gms.iid.InstanceID;
+import com.parse.Parse;
+import com.parse.ParseInstallation;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -49,6 +53,7 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                 public void run() {
                     pushContext = callbackContext;
                     JSONObject jo = null;
+                    JSONObject parse = null;
 
                     Log.v(LOG_TAG, "execute: data=" + data.toString());
                     SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
@@ -78,6 +83,23 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         // use the saved one
                         else {
                             token = sharedPref.getString(REGISTRATION_ID, "");
+                        }
+
+                        try {
+                            parse = data.getJSONObject(0).getJSONObject(PARSE);
+
+                            String appId = parse.getString(PARSE_APP_ID);
+                            String clientKey = parse.getString(PARSE_CLIENT_KEY);
+
+                            if (appId != null && clientKey != null) {
+                                Parse.initialize(getApplicationContext(), appId, clientKey);
+                                ParseInstallation.getCurrentInstallation().saveInBackground();
+                                Log.v(LOG_TAG, "Parse Initialized.");
+                            } else {
+                                Log.v(LOG_TAG, "No Parse configuration detected.");
+                            }
+                        } catch (JSONException e) {
+                            Log.v(LOG_TAG, "No Parse configuration detected.");
                         }
 
                         JSONObject json = new JSONObject().put(REGISTRATION_ID, token);
