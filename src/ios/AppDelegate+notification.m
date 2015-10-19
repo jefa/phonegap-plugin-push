@@ -47,20 +47,6 @@ static char launchNotificationKey;
 {
     if (notification)
     {
-        PushPlugin *pushHandler = [self getCommandInstance:@"PushNotification"];
-        NSMutableDictionary* parseOptions = [pushHandler.options objectForKey:@"parse"];
-
-        id appId = [parseOptions objectForKey:@"appId"];
-        id clientKey = [parseOptions objectForKey:@"clientKey"];
-
-        if (([appId isKindOfClass:[NSString class]] && [appId stringValue])
-            && ([clientKey isKindOfClass:[NSString class]] && [clientKey stringValue])) {
-            [Parse setApplicationId:appId clientKey:clientKey];
-            NSLog(@"Parse Initialized.");
-        } else {
-            NSLog(@"No Parse configuration detected.");
-        }
-
         NSDictionary *launchOptions = [notification userInfo];
         if (launchOptions)
             self.launchNotification = [launchOptions objectForKey: @"UIApplicationLaunchOptionsRemoteNotificationKey"];

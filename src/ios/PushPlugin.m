@@ -24,6 +24,7 @@
  */
 
 #import "PushPlugin.h"
+#import <Parse/Parse.h>
 
 @implementation PushPlugin
 
@@ -33,7 +34,6 @@
 @synthesize callbackId;
 @synthesize notificationCallbackId;
 @synthesize callback;
-@synthesize options;
 
 - (void)unregister:(CDVInvokedUrlCommand*)command;
 {
@@ -50,9 +50,19 @@
     NSLog(@"Push Plugin register called");
     self.callbackId = command.callbackId;
     
-    self.options = [command.arguments objectAtIndex:0];
+    NSMutableDictionary* options = [command.arguments objectAtIndex:0];
+    NSMutableDictionary* iosOptions = [options objectForKey:@"ios"];
+    NSMutableDictionary* parseOptions = [options objectForKey:@"parse"];
         
-    NSMutableDictionary* iosOptions = [self.options objectForKey:@"ios"];
+    id appId = [parseOptions objectForKey:@"appId"];
+    id clientKey = [parseOptions objectForKey:@"clientKey"];
+        
+    if ([appId isKindOfClass:[NSString class]] && [clientKey isKindOfClass:[NSString class]]) {
+        [Parse setApplicationId:appId clientKey:clientKey];
+        NSLog(@"Parse Initialized.");
+    } else {
+        NSLog(@"No Parse configuration detected.");
+    }
         
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     UIUserNotificationType UserNotificationTypes = UIUserNotificationTypeNone;
