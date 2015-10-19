@@ -14,7 +14,7 @@ module.exports = function (context) {
       './'+ fileName +'.zip', function (err) {
       if (!err) {
         console.log('downloaded');
-        exec('unzip ./' + fileName + '.zip -d ', function (err, out, code) {
+        exec('unzip ./' + fileName + '.zip -d ' + fileName, function (err, out, code) {
           console.log('expanded');
           var frameworkDir = context.opts.plugin.dir + '/src/android/';
           exec('mv ./' + fileName + '/Parse-*.jar ' + frameworkDir + '/Parse.jar', function (err, out, code) {
