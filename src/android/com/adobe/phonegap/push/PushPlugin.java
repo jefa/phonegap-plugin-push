@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
-import com.iwh.rxminder.R;
 
 import com.google.android.gms.iid.InstanceID;
 import com.parse.Parse;
