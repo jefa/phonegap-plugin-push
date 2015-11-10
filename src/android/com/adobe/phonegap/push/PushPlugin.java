@@ -87,16 +87,25 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                         try {
                             parse = data.getJSONObject(0).getJSONObject(PARSE);
 
-                            String appId = parse.getString(PARSE_APP_ID);
+                            /*String appId = parse.getString(PARSE_APP_ID);
                             String clientKey = parse.getString(PARSE_CLIENT_KEY);
 
                             if (appId != null && clientKey != null) {
-                                Parse.initialize(getApplicationContext(), appId, clientKey);
-                                ParseInstallation.getCurrentInstallation().saveInBackground();
-                                Log.v(LOG_TAG, "Parse Initialized.");
+                                //Parse.initialize(getApplicationContext(), appId, clientKey);
+                                ParseInstallation.getCurrentInstallation().put("dummyKey", "dummyValue");
+                                ParseInstallation.getCurrentInstallation().saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                    if (e == null) {
+                                        Log.v(LOG_TAG, "Parse data saved.");
+                                    } else {
+                                        Log.v(LOG_TAG, "Parse data NOT saved.", e);
+                                    }
+                                    }
+                                });
                             } else {
                                 Log.v(LOG_TAG, "No Parse configuration detected.");
-                            }
+                            }*/
                         } catch (JSONException e) {
                             Log.v(LOG_TAG, "No Parse configuration detected.");
                         }
